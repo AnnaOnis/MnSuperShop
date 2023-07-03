@@ -1,0 +1,36 @@
+﻿@page "/catalog"
+@inject ICatalog Catalog
+@inject NavigationManager Navigator
+
+<h1>Каталог магазина:</h1>
+<br>
+<br>
+
+<MudGrid>
+    @foreach (var product in products)
+    {
+        <MudItem xs="6" sm="3">
+            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+                <div @onclick="()=>OpenProduct(product)">
+                    <ProductItem Product="product" />
+                </div>
+            </MudPaper>
+        </MudItem>
+    }
+
+</MudGrid>
+
+
+@code {
+    private List<Product>? products;
+
+    protected override void OnInitialized()
+    {
+        products = Catalog.GetProducts();
+    }
+
+    private void OpenProduct(Product product)
+    {
+        Navigator.NavigateTo($"/catalog/{product.Id}");
+    }
+}

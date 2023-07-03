@@ -1,0 +1,26 @@
+﻿@page "/catalog/{ProductId:guid}"
+@inject ICatalog Catalog
+
+
+<div style="border:groove; border-radius: 10px; padding: 20px; width: 300px;" align="center">
+    <img src="@_imgPath" width="250"/><br />
+	<ProductItem Product="_product" />
+</div>
+
+
+
+@code {
+    [Parameter]
+    public Guid ProductId { get; set; }
+
+    private Product _product;
+
+    private string _imgPath = "ProductImage\\"; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _product = Catalog.GetProductById(ProductId);
+        _imgPath += _product.Name + ".jpg";
+    }
+}
