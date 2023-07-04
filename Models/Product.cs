@@ -15,6 +15,8 @@
         }
         /// <summary> ID товара </summary>
         public Guid Id { get; init; }
+        /// <summary> Изображение товара </summary>
+        public string ImageUrl { get; set; }
         /// <summary> Название товара </summary>
         public string Name { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using MnSuperShop.Models;
+using MnSuperShop.Pages;
 using System.Collections.Concurrent;
 
 namespace MnSuperShop
@@ -109,7 +110,8 @@ namespace MnSuperShop
                 products[i] = new Product(name, price)
                 {
                     Id = i == 0 ? Guid.Empty : Guid.NewGuid(),
-                    DiscountPrice = price,
+                    ImageUrl = "ProductImage//" + name + ".jpg",
+					DiscountPrice = price,
                     Description = "Описание " + name,
                     DescriptionDiscount = "Сегодня скидок нет!",
                     ProducedAt = producedAt,

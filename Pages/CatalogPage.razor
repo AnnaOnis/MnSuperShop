@@ -1,36 +1,28 @@
 ﻿@page "/catalog"
+@using MnSuperShop.Components
 @inject ICatalog Catalog
 @inject NavigationManager Navigator
 
-<h1>Каталог магазина:</h1>
-<br>
-<br>
+<div style="background-color:khaki; padding: 50px; border-radius: 10px">
+    <h1 align="center">Каталог магазина</h1>
+    <br>
+    <br>
 
-<MudGrid>
-    @foreach (var product in products)
-    {
-        <MudItem xs="6" sm="3">
-            <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-                <div @onclick="()=>OpenProduct(product)">
-                    <ProductItem Product="product" />
-                </div>
-            </MudPaper>
-        </MudItem>
-    }
+    <MudGrid Justify="Justify.Center">
+        @foreach (var product in products)
+        {
+			<MudItem>
+                <MudPaper style="background-color:cadetblue; padding: 10px">
+                    <MudCard >
+					    <ProductItem Product="product" />
+					    <MudCardActions>
+						    <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="()=>OpenProduct(product)">Подробнее о товаре</MudButton>
+					    </MudCardActions>
+                    </MudCard>
+                </MudPaper>
+            </MudItem>
+        }
 
-</MudGrid>
+    </MudGrid>
+</div>
 
-
-@code {
-    private List<Product>? products;
-
-    protected override void OnInitialized()
-    {
-        products = Catalog.GetProducts();
-    }
-
-    private void OpenProduct(Product product)
-    {
-        Navigator.NavigateTo($"/catalog/{product.Id}");
-    }
-}
