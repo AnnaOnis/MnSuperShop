@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MnSuperShop.Models;
+using MyShopFrontend.Models;
 
-namespace MnSuperShop.Pages
+namespace MyShopFrontend.Pages
 {
     public partial class ProductPage
     {

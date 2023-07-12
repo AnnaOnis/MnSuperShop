@@ -1,6 +1,5 @@
 ﻿@page "/catalog"
-@using MnSuperShop.Components
-@inject ICatalog Catalog
+@inject IMyShopClient MyShopClient
 @inject NavigationManager Navigator
 
 <div style="background-color:khaki; padding: 50px; border-radius: 10px">
@@ -22,7 +21,6 @@
                 </MudPaper>
             </MudItem>
         }
-
     </MudGrid>
 </div>
 

@@ -1,6 +1,6 @@
-﻿using MnSuperShop.Models;
+﻿using MyShopFrontend.Models;
 
-namespace MnSuperShop
+namespace MyShopFrontend.Services.Interfaces
 {
     public interface ICatalog
     {

@@ -1,33 +1,22 @@
-﻿namespace MnSuperShop.Models
+﻿namespace MyShopBackend.Data
 {
     public class Product
     {
-        public Product(string name, decimal price)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentException($"\"{nameof(name)}\" не может быть неопределенным или пустым.", nameof(name));
-            }
-            if (price < 0) throw new ArgumentNullException(nameof(price));
-
-            Name = name;
-            Price = price;
-        }
         /// <summary> ID товара </summary>
         public Guid Id { get; init; }
         /// <summary> Изображение товара </summary>
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         /// <summary> Название товара </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary> Описание товара </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary> Цена товара </summary>
         public decimal Price { get; set; }
 
         /// <summary> Информация о скидках </summary>
-        public string DescriptionDiscount { get; set; }
+        public string? DescriptionDiscount { get; set; }
 
         /// <summary> Цена товара со скидкой</summary>
         public decimal DiscountPrice { get; set; }
@@ -40,11 +29,5 @@
 
         /// <summary> Количество товара в наличии </summary>
         public double Stock { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Id}  {Name}  {Description}  {Price}  {DiscountPrice}";
-        }
-
     }
 }

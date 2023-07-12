@@ -1,8 +1,8 @@
-﻿using MnSuperShop.Models;
-using MnSuperShop.Pages;
+﻿using MyShopFrontend.Models;
+using MyShopFrontend.Services.Interfaces;
 using System.Collections.Concurrent;
 
-namespace MnSuperShop
+namespace MyShopFrontend.Services
 {
     public class InMemoryCatalog : ICatalog
     {
@@ -111,7 +111,7 @@ namespace MnSuperShop
                 {
                     Id = i == 0 ? Guid.Empty : Guid.NewGuid(),
                     ImageUrl = "ProductImage//" + name + ".jpg",
-					DiscountPrice = price,
+                    DiscountPrice = price,
                     Description = "Описание " + name,
                     DescriptionDiscount = "Сегодня скидок нет!",
                     ProducedAt = producedAt,
