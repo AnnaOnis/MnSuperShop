@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MyShopFrontend.Models;
+
 
 namespace MyShopFrontend.Pages
 {
@@ -8,12 +8,16 @@ namespace MyShopFrontend.Pages
         [Parameter]
         public Guid ProductId { get; set; }
 
+        [Inject]
+        private IMyShopClient MyShopClient { get; set; } = null!;
+
         private Product? _product;
+        private CancellationToken _cancellationToken;
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            _product = Catalog.GetProductById(ProductId);
+            _product = await MyShopClient.GetProduct(ProductId, _cancellationToken);
         }
     }
 }

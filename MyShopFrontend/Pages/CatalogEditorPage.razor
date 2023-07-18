@@ -1,0 +1,135 @@
+﻿@page "/catalog_editor"
+
+<MudText Typo="Typo.h3" GutterBottom="true">Редактор каталога</MudText>
+<br />
+<br />
+<br />
+
+@if (_products == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudTable Items="_products" 
+                Hover="true" SortLabel="Sort By" 
+                Elevation="0" Filter="new Func<Product,bool>(FilterFunc1)" 
+                T="Product" @bind-SelectedItem="@_selectedProduct"
+                ReadOnly="false"
+                IsEditRowSwitchingBlocked="false"
+                CanCancelEdit="true"
+                CommitEditTooltip="Commit Edit">
+        <ToolBarContent>
+            <MudText Typo="Typo.h5">Товары</MudText>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="()=>Remove()"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.EditNote" aria-label="edit"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.LibraryAdd" aria-label="add" OnClick="()=>Add()"></MudIconButton>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Product, object>(x=>x.Name)">Наименование</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Price)">Цена</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.DiscountPrice)">Цена со скидкой</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.ProducedAt.ToShortDateString())">Дата производства</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.ExpiredAt.ToShortDateString())">Срок годности</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Stock)">Количество на складе</MudTableSortLabel></MudTh>
+            <MudTh>Описание</MudTh>
+            <MudTh>Информация о скидках</MudTh>
+            <MudTh>Изображение</MudTh>
+            <MudTh>Идентификатор</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+             <MudTd DataLabel="Наименование">@context.Name</MudTd>
+             <MudTd DataLabel="Цена">@context.Price</MudTd>
+             <MudTd DataLabel="Цена со скидкой">@context.DiscountPrice</MudTd>
+             <MudTd DataLabel="Дата производства">@context.ProducedAt</MudTd>
+             <MudTd DataLabel="Срок годности">@context.ExpiredAt</MudTd>
+             <MudTd DataLabel="Количество на складе">@context.Stock</MudTd>
+             <MudTd DataLabel="Описание">@context.Description</MudTd>
+             <MudTd DataLabel="Информация о скидках">@context.DescriptionDiscount</MudTd>
+             <MudTd DataLabel="Изображение">@context.ImageUrl</MudTd>
+             <MudTd DataLabel="Идентификатор" >@context.Id</MudTd>
+        </RowTemplate>
+        <RowEditingTemplate>
+            <MudTd DataLabel="Наименование"><MudTextField @bind-Value="@context.Name" Required /></MudTd>
+            <MudTd DataLabel="Цена"><MudTextField @bind-Value="@context.Price" Required /></MudTd>
+            <MudTd DataLabel="Цена со скидкой"><MudTextField @bind-Value="@context.DiscountPrice" Required /></MudTd>
+            <MudTd DataLabel="Дата производства"><MudTextField @bind-Value="@context.ProducedAt" Required/></MudTd>
+            <MudTd DataLabel="Срок годности"><MudTextField @bind-Value="@context.ExpiredAt" Required /></MudTd>
+            <MudTd DataLabel="Количество на складе"><MudNumericField @bind-Value="@context.Stock" Required /></MudTd>
+            <MudTd DataLabel="Описание"><MudTextField @bind-Value="@context.Description" Required /></MudTd>
+            <MudTd DataLabel="Информация о скидках"><MudTextField @bind-Value="@context.DescriptionDiscount" Required /></MudTd>
+            <MudTd DataLabel="Изображение"><MudTextField @bind-Value="@context.ImageUrl" Required /></MudTd>
+            <MudTd DataLabel="Идентификатор">@context.Id</MudTd>
+        </RowEditingTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@page "/catalog_editor"
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Weather forecast</MudText>
+<MudText Class="mb-8">This component demonstrates fetching data from the server.</MudText>
+@if (forecasts == null)
+{
+    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+}
+else
+{
+    <MudTable Items="forecasts" Hover="true" SortLabel="Sort By" Elevation="0">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<WeatherForecast, object>(x=>x.Date)">Date</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureF)">Temp. (F)</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.Summary!)">Summary</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Date">@context.Date</MudTd>
+            <MudTd DataLabel="Temp. (C)">@context.TemperatureC</MudTd>
+            <MudTd DataLabel="Temp. (F)">@context.TemperatureF</MudTd>
+            <MudTd DataLabel="Summary">@context.Summary</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+}
+
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+    }
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string? Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}*@

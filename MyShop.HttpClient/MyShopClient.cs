@@ -1,9 +1,4 @@
-﻿using MyShopFrontend.Models;
-using MyShopFrontend.Services.Interfaces;
-using System.Net.Http.Json;
-
-namespace MyShopFrontend.Services
-{
+﻿
     public class MyShopClient : IDisposable, IMyShopClient
     {
         private readonly string _host;
@@ -29,9 +24,9 @@ namespace MyShopFrontend.Services
             ((IDisposable)_httpClient).Dispose();
         }
 
-        public async Task<Product[]> GetProducts()
+        public async Task<Product[]> GetProducts(CancellationToken cancellationToken)
         {
-            var products = await _httpClient.GetFromJsonAsync<Product[]>("/get_products");
+            var products = await _httpClient.GetFromJsonAsync<Product[]>("/get_products", cancellationToken);
             if (products == null)
             {
                 throw new InvalidOperationException("The server returned the null products!");
@@ -39,11 +34,11 @@ namespace MyShopFrontend.Services
             return products;
         }
 
-        public async Task<Product> GetProduct(Guid id)
+        public async Task<Product> GetProduct(Guid id, CancellationToken cancellationToken)
         {
-            ArgumentNullException.ThrowIfNull(nameof(id));
+            ArgumentException.
 
-            var product = await _httpClient.GetFromJsonAsync<Product>($"/get_product?id={id}");
+            var product = await _httpClient.GetFromJsonAsync<Product>($"/get_product?id={id}", cancellationToken);
             if (product == null)
             {
                 throw new InvalidOperationException("The server returned the null product!");
@@ -51,28 +46,28 @@ namespace MyShopFrontend.Services
             return product;
         }
 
-        public async Task AddProduct(Product product)
+        public async Task AddProduct(Product product, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(nameof(product));
 
-            using var response = await _httpClient.PostAsJsonAsync("/get_products", product);
+            using var response = await _httpClient.PostAsJsonAsync("/get_products", product, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task RemoveProduct(Guid id)
+        public async Task RemoveProduct(Guid id, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(nameof(id));
 
-            using var response = await _httpClient.PostAsJsonAsync($"/remove_product", id);
+            using var response = await _httpClient.PostAsJsonAsync($"/remove_product", id, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task UpdateProduct(Product product)
+        public async Task UpdateProduct(Product product, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(nameof(product));
 
-            using var response = await _httpClient.PostAsJsonAsync("/update_product_fb", product);
+            using var response = await _httpClient.PostAsJsonAsync("/update_product_fb", product, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
     }
-}
+

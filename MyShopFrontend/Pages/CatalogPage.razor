@@ -1,6 +1,4 @@
 ﻿@page "/catalog"
-@inject IMyShopClient MyShopClient
-@inject NavigationManager Navigator
 
 <div style="background-color:khaki; padding: 50px; border-radius: 10px">
     <h1 align="center">Каталог магазина</h1>
@@ -8,19 +6,31 @@
     <br>
 
     <MudGrid Justify="Justify.Center">
-        @foreach (var product in products)
+        @if(_products is null)
         {
-			<MudItem>
-                <MudPaper style="background-color:cadetblue; padding: 10px">
-                    <MudCard >
-					    <ProductItem Product="product" />
-					    <MudCardActions>
-						    <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="()=>OpenProduct(product)">Подробнее о товаре</MudButton>
-					    </MudCardActions>
-                    </MudCard>
-                </MudPaper>
-            </MudItem>
+            <div style="display:flex; flex-direction:column">
+                <div><MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" /></div>
+                <div>Загрузка каталога...</div>
+            </div>
+            
         }
+        else
+        {
+            @foreach (var product in _products)
+            {
+                <MudItem>
+                    <MudPaper style="background-color:cadetblue; padding: 10px">
+                        <MudCard>
+                            <ProductItem Product="product" />
+                            <MudCardActions>
+                                <MudButton Variant="Variant.Text" Color="Color.Primary" @onclick="()=>OpenProduct(product)">Подробнее о товаре</MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudPaper>
+                </MudItem>
+            }
+        }
+
     </MudGrid>
 </div>
 

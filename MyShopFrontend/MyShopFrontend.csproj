@@ -20,5 +20,9 @@
 	<ItemGroup>
 	  <Folder Include="wwwroot\ProductImage\" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\MyShop.HttpApiCient\MyShop.HttpApiCient.csproj" />
+	</ItemGroup>
 
 </Project>

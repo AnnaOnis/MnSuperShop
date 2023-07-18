@@ -1,4 +1,6 @@
-﻿namespace MyShopFrontend.Models
+﻿using System;
+
+namespace MyShopFrontend.Models
 {
     public class Product
     {

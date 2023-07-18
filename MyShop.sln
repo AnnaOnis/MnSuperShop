@@ -6,6 +6,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyShopBackend", "MyShopBack
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyShopFrontend", "MyShopFrontend\MyShopFrontend.csproj", "{631C2ECD-5C12-41B8-8F43-F017DA89FCFE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyShop.HttpApiCient", "MyShop.HttpApiCient\MyShop.HttpApiCient.csproj", "{DE33468C-CDA2-4ECD-8BB8-4DF697EDAAC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{631C2ECD-5C12-41B8-8F43-F017DA89FCFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{631C2ECD-5C12-41B8-8F43-F017DA89FCFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{631C2ECD-5C12-41B8-8F43-F017DA89FCFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE33468C-CDA2-4ECD-8BB8-4DF697EDAAC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE33468C-CDA2-4ECD-8BB8-4DF697EDAAC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE33468C-CDA2-4ECD-8BB8-4DF697EDAAC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE33468C-CDA2-4ECD-8BB8-4DF697EDAAC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

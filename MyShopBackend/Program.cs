@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyShopBackend.Data;
+using MyShopBackend.Data.Repositoryes;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 // Add services to the container.
 
@@ -19,14 +18,16 @@ var dbPath = "myapp.db";
 builder.Services.AddDbContext<AppDbContext>(
    options => options.UseSqlite($"Data Source={dbPath}"));
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+
 var app = builder.Build();
 
 app.UseCors(policy =>
 {
     policy
-        .AllowAnyMethod()
+        .WithOrigins("https://localhost:5001")
         .AllowAnyHeader()
-        .AllowAnyOrigin();
+        .AllowAnyMethod();
 });
 
 
@@ -47,64 +48,87 @@ app.MapGet("/get_products", GetProducts);
 app.MapGet("/get_product", GetProductById);
 app.MapPost("/add_product", AddProduct);
 app.MapPost("/remove_product", RemoveProduct);
-app.MapPost("/update_product_fb", UpdateProductFromBody);
-app.MapPost("/update_product_fq", UpdateProductFromQuery);
+app.MapPost("/update_product", UpdateProduct);
+
 
 app.Run();
 
 
-Task<Product[]> GetProducts(AppDbContext dbContext)
+async Task<IResult> GetProducts(
+                    [FromServices] IRepository<Product> repository, 
+                    CancellationToken cancellationToken)
 {
-    return dbContext.Products.ToArrayAsync();
+    try
+    {
+        var products = await repository.GetAll(cancellationToken);
+        return Results.Ok(products);
+    }
+    catch (InvalidOperationException) 
+    {
+        return Results.NoContent();
+    } 
+    
 }
-async Task<IResult> GetProductById([FromQuery] Guid id, [FromServices] AppDbContext dbContext)
+async Task<IResult> GetProductById(
+                    [FromQuery] Guid id, 
+                    [FromServices] IRepository<Product> repository, 
+                    CancellationToken cancellationToken)
 {
-    var product = await dbContext.Products.FirstAsync(p => p.Id == id);
-    if(product == null)
+    try
+    {
+        var product = await repository.GetById(id, cancellationToken);
+        return Results.Ok(product);
+    }
+    catch(InvalidOperationException)
     {
         return Results.NotFound();
     }
-    return Results.Ok(product);
 }
 
-async Task AddProduct([FromBody] Product product, [FromServices] AppDbContext dbContext)
+async Task<IResult> AddProduct(
+            [FromBody] Product product, 
+            [FromServices] IRepository<Product> repository, 
+            CancellationToken cancellationToken)
 {
-    await dbContext.Products.AddAsync(product);
-    await dbContext.SaveChangesAsync();
-}
-
-async Task<IResult> RemoveProduct([FromQuery] Guid id, [FromServices] AppDbContext dbContext)
-{
-    var product = await dbContext.Products.FirstAsync(p => p.Id == id);
-    if (product == null)
+    try
     {
-        return Results.NotFound();
-    }   
-    dbContext.Products.Remove(product);
-    await dbContext.SaveChangesAsync();
-    return Results.Ok();
-}
-
-async Task UpdateProductFromBody([FromBody] Product updatedProduct, 
-                                 [FromServices] AppDbContext dbContext)
-{
-    dbContext.Products.Update(updatedProduct);
-    await dbContext.SaveChangesAsync();
-}
-
-async Task<IResult> UpdateProductFromQuery([FromQuery] Guid productId,
-                                  [FromQuery] string name,
-                                  [FromQuery] decimal price, 
-                                  [FromServices] AppDbContext dbContext)
-{
-    var product = await dbContext.Products.FirstAsync(p => p.Id == productId);
-    if (product == null)
+        await repository.Add(product, cancellationToken);
+        return Results.Ok();
+    }
+    catch (ArgumentNullException)
     {
         return Results.NotFound();
     }
-    product.Price = price;
-    product.Name = name;
-    dbContext.Products.Update(product);
-    await dbContext.SaveChangesAsync();
-    return Results.Ok();
+}
+
+async Task<IResult> RemoveProduct(
+                    [FromQuery] Guid id, 
+                    [FromServices] IRepository<Product> repository,
+                    CancellationToken cancellationToken)
+{
+    try
+    {
+        await repository.Delete(id, cancellationToken);
+        return Results.Ok();
+    }
+    catch (InvalidOperationException)
+    {
+        return Results.NotFound();
+    }
+}
+
+async Task<IResult> UpdateProduct([FromBody] Product updatedProduct, 
+                                 [FromServices] IRepository<Product> repository,
+                                 CancellationToken cancellationToken)
+{
+    try
+    {
+        await repository.Update(updatedProduct, cancellationToken);
+        return Results.Ok();
+    }
+    catch(ArgumentNullException)
+    {
+        return Results.NotFound();
+    }
+
 }

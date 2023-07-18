@@ -1,7 +1,18 @@
-﻿namespace MyShopBackend.Data
-{
-    public class Product : IEntity
+﻿
+    public class Product
     {
+        public Product(string name, decimal price)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException($"\"{nameof(name)}\" не может быть неопределенным или пустым.", nameof(name));
+            }
+            if (price < 0) throw new ArgumentNullException(nameof(price));
+
+            Id = Guid.NewGuid();
+            Name = name;
+            Price = price;
+        }
         /// <summary> ID товара </summary>
         public Guid Id { get; init; }
         /// <summary> Изображение товара </summary>
@@ -29,5 +40,11 @@
 
         /// <summary> Количество товара в наличии </summary>
         public double Stock { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Id}  {Name}  {Description}  {Price}  {DiscountPrice}";
+        }
+
     }
-}
+
