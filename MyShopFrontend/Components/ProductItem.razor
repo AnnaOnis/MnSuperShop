@@ -1,5 +1,14 @@
-﻿
-<MudCard style="width: 300px">
+﻿@if (Product is null)
+{
+    <div style="display:flex; flex-direction:column">
+        <div><MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" /></div>
+        <div>Загрузка...</div>
+    </div>
+
+}
+else
+{
+   <MudCard style="width: 300px">
         <MudCardMedia Image="@Product.ImageUrl" Height="200" />
         <MudCardContent>
             <MudText Typo="Typo.h4">@Product.Name</MudText>
@@ -9,7 +18,9 @@
             <MudText Typo="Typo.body1"><strong>Срок годности:</strong>@Product.ExpiredAt.ToShortDateString()</MudText>
             <MudText Typo="Typo.body1"><strong>Количество в наличии:</strong>@Product.Stock</MudText>
         </MudCardContent>
-</MudCard>
+    </MudCard> 
+}
+
 
 @code {
     [Parameter]

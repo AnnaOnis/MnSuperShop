@@ -1,38 +1,79 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using MyShopFrontend.Components;
 
 namespace MyShopFrontend.Pages
 {
     public partial class CatalogEditorPage : IDisposable
     {
         [Inject]
+        private IDialogService DialogService { get; set; } = null!;
+        [Inject]
         private IMyShopClient MyShopClient { get; set; } = null!;
-        private Product[]? _products;
+        private List<Product> _products = new();
         private string searchString1 = "";
         private CancellationTokenSource _cts = new();
         private Product? _selectedProduct;
+        private Product? _selectedProductBeforeEdit;
+        private Product? _addedOrUpdatedProduct;
+        private Product? _deletedProduct;
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            _products = await MyShopClient.GetProducts(_cts.Token);
+            _products = (await MyShopClient.GetProducts(_cts.Token)).ToList();
         }
 
-        private async Task Add()
+        private void AddItemToTable()
         {
-          
+            _addedOrUpdatedProduct = new Product("Новый товар", 0);
+            _products.Add(_addedOrUpdatedProduct);
         }
-        private async Task Remove()
+
+        private async Task RemoveItem(object element)
+        {
+            var deletedProduct = (Product)element;
+            var dialog = DialogService.Show<DeleteDialog>("Подтвердить удаление");
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            {
+               _products.Remove(deletedProduct);               
+                StateHasChanged();
+                await MyShopClient.RemoveProduct(deletedProduct.Id, _cts.Token);
+            }
+        }
+
+        private void SelectProduct(object element)
+        {
+            _selectedProduct = (Product)element;
+        }
+        private void BackupItem(object element)
+        {
+            _selectedProductBeforeEdit = (Product)element;
+        }
+
+        private void ResetItemToOriginalValues(object element)
         {
 
+        }
+
+        private async void AddOrUpdateProductInDB(object element)
+        {
+            _addedOrUpdatedProduct = (Product)element;
+            var products = await MyShopClient.GetProducts(_cts.Token);
+            if (_addedOrUpdatedProduct is not null && !Array.Exists(products, p=>p.Id == _addedOrUpdatedProduct.Id))
+            {
+                await MyShopClient.AddProduct(_addedOrUpdatedProduct, _cts.Token);
+            }
+            else if(_addedOrUpdatedProduct is not null && Array.Exists(products, p => p.Id == _addedOrUpdatedProduct.Id))
+            {
+                await MyShopClient.UpdateProduct(_addedOrUpdatedProduct, _cts.Token);
+            }
         }
         private bool FilterFunc1(Product product) => FilterFunc(product, searchString1);
 
         private bool FilterFunc(Product product, string searchString)
         {
-            if (product is null)
-            {
-                throw new ArgumentNullException(nameof(product));
-            }
 
             if (string.IsNullOrWhiteSpace(searchString))
                 return true;

@@ -14,7 +14,7 @@ namespace MyShopBackend.Data.Repositoryes
             {
                 throw new ArgumentNullException(nameof(email));
             }
-
+            
             return Entities.SingleAsync(e => e.Email == email, cancellationToken);
         }
     }

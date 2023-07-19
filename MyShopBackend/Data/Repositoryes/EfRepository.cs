@@ -36,8 +36,7 @@ namespace MyShopBackend.Data.Repositoryes
             _dbContext.Entry(entity).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        public async Task Delete(Guid Id, CancellationToken cancellationToken)
+        public virtual async Task Delete(Guid Id, CancellationToken cancellationToken)
         {
             var entity = await Entities.FirstAsync(x => x.Id == Id, cancellationToken);
             Entities.Remove(entity);

@@ -16,13 +16,13 @@ namespace MyShopFrontend.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            await Task.Delay(TimeSpan.FromSeconds(3), _cts.Token);
+            await Task.Delay(TimeSpan.FromSeconds(1), _cts.Token);
             _products = await MyShopClient.GetProducts(_cts.Token);
         }
 
         private void OpenProduct(Product product)
         {
-            Navigator.NavigateTo($"/catalog/{product.Id}");
+            Navigator.NavigateTo($"/catalog/product/{product.Id}");
         }
 
         public void Dispose()
