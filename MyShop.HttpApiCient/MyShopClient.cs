@@ -1,79 +1,88 @@
-﻿using System.Net.Http.Json;
+﻿using MyShop.HttpApiCient.Models;
+using System.Net.Http.Json;
+using System.Security.Principal;
 
 public class MyShopClient : IDisposable, IMyShopClient
+{
+    private readonly string _host;
+    private readonly HttpClient _httpClient;
+
+    public MyShopClient(string host = "http://myshop.com/", HttpClient? httpClient = null)
     {
-        private readonly string _host;
-        private readonly HttpClient _httpClient;
+        ArgumentException.ThrowIfNullOrEmpty(host, nameof(host));
 
-        public MyShopClient(string host = "http://myshop.com/", HttpClient? httpClient = null)
+        if (!Uri.TryCreate(host, UriKind.Absolute, out var hostUri))
         {
-            ArgumentException.ThrowIfNullOrEmpty(host, nameof(host));
-
-            if (!Uri.TryCreate(host, UriKind.Absolute, out var hostUri))
-            {
-                throw new ArgumentException("The host address should be a valid url", nameof(host));
-            }
-            _host = host;
-            _httpClient = httpClient ?? new HttpClient();
-            if (_httpClient.BaseAddress is null)
-            {
-                _httpClient.BaseAddress = hostUri;
-            }
+            throw new ArgumentException("The host address should be a valid url", nameof(host));
         }
-
-        public void Dispose()
+        _host = host;
+        _httpClient = httpClient ?? new HttpClient();
+        if (_httpClient.BaseAddress is null)
         {
-            ((IDisposable)_httpClient).Dispose();
+            _httpClient.BaseAddress = hostUri;
         }
-
-        public async Task<Product[]> GetProducts(CancellationToken cancellationToken)
-        {
-            var products = await _httpClient.GetFromJsonAsync<Product[]>("/catalog/get_products", cancellationToken);
-            if (products == null)
-            {
-                throw new InvalidOperationException("The server returned the null products!");
-            }
-            else
-            {
-                return products;
-            }           
-        }
-
-        public async Task<Product> GetProduct(Guid id, CancellationToken cancellationToken)
-        {
-            var product = await _httpClient.GetFromJsonAsync<Product>($"/catalog/get_product?id={id}", cancellationToken);
-            if (product == null)
-            {
-                throw new InvalidOperationException("The server returned the null product!");
-            }
-            else
-            {
-                return product;
-            }
-        }
-
-        public async Task AddProduct(Product product, CancellationToken cancellationToken)
-        {
-            ArgumentNullException.ThrowIfNull(nameof(product));
-
-            using var response = await _httpClient.PostAsJsonAsync("/catalog/add_product", product, cancellationToken);
-            response.EnsureSuccessStatusCode();
-        }
-
-        public async Task RemoveProduct(Guid id, CancellationToken cancellationToken)
-        {
-            using var response = await _httpClient.PostAsJsonAsync($"/catalog/remove_product", id, cancellationToken);
-            response.EnsureSuccessStatusCode();
-        }
-
-        public async Task UpdateProduct(Product product, CancellationToken cancellationToken)
-        {
-            ArgumentNullException.ThrowIfNull(nameof(product));
-
-            using var response = await _httpClient.PostAsJsonAsync("/catalog/update_product", product, cancellationToken);
-            response.EnsureSuccessStatusCode();
-        }
-
-
     }
+
+    public void Dispose()
+    {
+        ((IDisposable)_httpClient).Dispose();
+    }
+
+    public async Task<Product[]> GetProducts(CancellationToken cancellationToken)
+    {
+        var products = await _httpClient.GetFromJsonAsync<Product[]>("/catalog/get_products", cancellationToken);
+        if (products == null)
+        {
+            throw new InvalidOperationException("The server returned the null products!");
+        }
+        else
+        {
+            return products;
+        }
+    }
+
+    public async Task<Product> GetProduct(Guid id, CancellationToken cancellationToken)
+    {
+        var product = await _httpClient.GetFromJsonAsync<Product>($"/catalog/get_product?id={id}", cancellationToken);
+        if (product == null)
+        {
+            throw new InvalidOperationException("The server returned the null product!");
+        }
+        else
+        {
+            return product;
+        }
+    }
+
+    public async Task AddProduct(Product product, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(nameof(product));
+
+        using var response = await _httpClient.PostAsJsonAsync("/catalog/add_product", product, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task RemoveProduct(Guid id, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.PostAsync($"/catalog/remove_product?id={id}", null, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task UpdateProduct(Product product, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(nameof(product));
+
+        using var response = await _httpClient.PostAsJsonAsync("/catalog/update_product", product, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task RegistrateAccountAsync(Account account, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(nameof(account));
+
+        using var response = await _httpClient.PostAsJsonAsync("/account/register", account, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+}
 

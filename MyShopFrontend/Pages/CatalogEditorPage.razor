@@ -11,19 +11,39 @@
 }
 else
 {
-    <MudTable Items="_products" 
-                Hover="true" SortLabel="Sort By" 
-                Elevation="0" Filter="new Func<Product,bool>(FilterFunc1)" 
-                T="Product" @bind-SelectedItem="@_selectedProduct"
-                ReadOnly="false"
-                IsEditRowSwitchingBlocked="false"
-                CanCancelEdit="true"
-                CancelEditTooltip="Cancel Edit"
-                CommitEditTooltip="Commit Edit"
-                RowEditPreview="BackupItem"
-                OnRowClick="SelectProduct"
-                RowEditCommit="AddOrUpdateProductInDB"
-                RowEditCancel="ResetItemToOriginalValues">
+    <MudTable Items="_products"
+              Dense="true"
+              Hover="true" 
+              SortLabel="Sort By"
+              Elevation="0" 
+              Filter="new Func<Product,bool>(FilterFunc1)"
+              T="Product" @bind-SelectedItem="@_selectedProduct"
+              ReadOnly="false"
+              IsEditRowSwitchingBlocked="false"
+              CanCancelEdit="true"
+              CancelEditTooltip="Cancel Edit"
+              CommitEditTooltip="Commit Edit"
+              ApplyButtonPosition="TableApplyButtonPosition.Start"
+              EditButtonPosition="TableEditButtonPosition.Start"
+              EditTrigger="TableEditTrigger.EditButton"
+              RowEditPreview="BackupItem"
+              OnRowClick="SelectProduct"
+              RowEditCommit="AddOrUpdateProductInDB"
+              RowEditCancel="ResetItemToOriginalValues">
+        <ColGroup>
+            <col style="width: 20px;" />
+            <col style="width: 20px;" />
+            <col style="width: 60px;" />
+            <col style="width: 30px;" />
+            <col style="width: 30px;" />
+            <col style="width: 60px;" />
+            <col style="width: 60px;" />
+            <col style="width: 30px;" />
+            <col style="width: 100px;" />
+            <col style="width: 100px;" />
+            <col style="width: 60px;" />
+            <col style="width: 60px;" />
+        </ColGroup>
         <ToolBarContent>
             <MudText Typo="Typo.h5">Товары</MudText>
             <MudIconButton Icon="@Icons.Material.Filled.LibraryAdd" aria-label="add" OnClick="()=>AddItemToTable()"></MudIconButton>
@@ -31,6 +51,7 @@ else
             <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <HeaderContent>
+            <MudTh></MudTh>
             <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Product, object>(x=>x.Name)">Наименование</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.Price)">Цена</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<Product, object>(x=>x.DiscountPrice)">Цена со скидкой</MudTableSortLabel></MudTh>
@@ -43,6 +64,9 @@ else
             <MudTh>Идентификатор</MudTh>
         </HeaderContent>
         <RowTemplate>
+             <MudTd>
+                 <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => RemoveItem(context)"></MudIconButton>
+             </MudTd>
              <MudTd DataLabel="Наименование">@context.Name</MudTd>
              <MudTd DataLabel="Цена">@context.Price</MudTd>
              <MudTd DataLabel="Цена со скидкой">@context.DiscountPrice</MudTd>
@@ -53,12 +77,10 @@ else
              <MudTd DataLabel="Информация о скидках">@context.DescriptionDiscount</MudTd>
              <MudTd DataLabel="Изображение">@context.ImageUrl</MudTd>
              <MudTd DataLabel="Идентификатор" >@context.Id</MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="() => RemoveItem(context)"></MudIconButton>
-            </MudTd>
         </RowTemplate>
         <RowEditingTemplate>
-            <MudTd DataLabel="Наименование"><MudTextField @bind-Value="@context.Name" Required /></MudTd>
+            <MudTd></MudTd>
+            <MudTd DataLabel="Наименование" ><MudTextField @bind-Value="@context.Name" Required /></MudTd>
             <MudTd DataLabel="Цена"><MudTextField @bind-Value="@context.Price" Required /></MudTd>
             <MudTd DataLabel="Цена со скидкой"><MudTextField @bind-Value="@context.DiscountPrice" Required /></MudTd>
             <MudTd DataLabel="Дата производства"><MudTextField @bind-Value="@context.ProducedAt" Required/></MudTd>
@@ -72,6 +94,9 @@ else
         <PagerContent>
             <MudTablePager />
         </PagerContent>
+        <EditButtonContent Context="button">
+            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+        </EditButtonContent>
     </MudTable>
 }
 

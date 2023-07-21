@@ -1,4 +1,6 @@
 ﻿
+using MyShop.HttpApiCient.Models;
+
 public interface IMyShopClient
     {
         Task<Product[]> GetProducts(CancellationToken cancellationToken);
@@ -6,4 +8,5 @@ public interface IMyShopClient
         Task AddProduct(Product product, CancellationToken cancellationToken);
         Task RemoveProduct(Guid id, CancellationToken cancellationToken);
         Task UpdateProduct(Product product, CancellationToken cancellationToken);
+        Task RegistrateAccountAsync(Account account, CancellationToken cancellationToken);
     }

@@ -16,7 +16,6 @@ namespace MyShopFrontend.Pages
         private Product? _selectedProduct;
         private Product? _selectedProductBeforeEdit;
         private Product? _addedOrUpdatedProduct;
-        private Product? _deletedProduct;
 
         protected override async Task OnInitializedAsync()
         {
@@ -32,40 +31,61 @@ namespace MyShopFrontend.Pages
 
         private async Task RemoveItem(object element)
         {
-            var deletedProduct = (Product)element;
+            
+            var product = (Product)element;
             var dialog = DialogService.Show<DeleteDialog>("Подтвердить удаление");
             var result = await dialog.Result;
             if (!result.Canceled)
             {
-               _products.Remove(deletedProduct);               
-                StateHasChanged();
-                await MyShopClient.RemoveProduct(deletedProduct.Id, _cts.Token);
+                if (product == _addedOrUpdatedProduct)
+                {
+                    _products.Remove(product);
+                    StateHasChanged();
+                }
+                else
+                {
+                    _products.Remove(product);               
+                    StateHasChanged();
+                    await MyShopClient.RemoveProduct(product.Id, _cts.Token);
+                }
+
             }
         }
 
         private void SelectProduct(object element)
         {
-            _selectedProduct = (Product)element;
+
         }
         private void BackupItem(object element)
         {
-            _selectedProductBeforeEdit = (Product)element;
+
         }
 
         private void ResetItemToOriginalValues(object element)
         {
-
+            if(_selectedProductBeforeEdit is not null)
+            {
+                ((Product)element).Name = _selectedProductBeforeEdit.Name;
+                ((Product)element).Price = _selectedProductBeforeEdit.Price;
+                ((Product)element).DiscountPrice = _selectedProductBeforeEdit.DiscountPrice;
+                ((Product)element).Stock = _selectedProductBeforeEdit.Stock;
+                ((Product)element).Description = _selectedProductBeforeEdit.Description;
+                ((Product)element).DescriptionDiscount = _selectedProductBeforeEdit.DescriptionDiscount;
+                ((Product)element).ExpiredAt = _selectedProductBeforeEdit.ExpiredAt;
+                ((Product)element).ImageUrl = _selectedProductBeforeEdit.ImageUrl;
+                ((Product)element).ProducedAt = _selectedProductBeforeEdit.ProducedAt;
+            }
         }
 
         private async void AddOrUpdateProductInDB(object element)
         {
             _addedOrUpdatedProduct = (Product)element;
             var products = await MyShopClient.GetProducts(_cts.Token);
-            if (_addedOrUpdatedProduct is not null && !Array.Exists(products, p=>p.Id == _addedOrUpdatedProduct.Id))
+            if (!Array.Exists(products, p=>p.Id == _addedOrUpdatedProduct.Id))
             {
                 await MyShopClient.AddProduct(_addedOrUpdatedProduct, _cts.Token);
             }
-            else if(_addedOrUpdatedProduct is not null && Array.Exists(products, p => p.Id == _addedOrUpdatedProduct.Id))
+            else
             {
                 await MyShopClient.UpdateProduct(_addedOrUpdatedProduct, _cts.Token);
             }

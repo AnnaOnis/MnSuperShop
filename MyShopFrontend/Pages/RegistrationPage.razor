@@ -1,0 +1,31 @@
+﻿@page "/registration"
+@using System.ComponentModel.DataAnnotations;
+
+<PageTitle>Регистрация</PageTitle>
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit" >
+    <DataAnnotationsValidator />
+    <MudCard>
+        <MudCardContent>
+            <MudTextField Label="Имя" HelperText="Мин. 3 символа"
+            @bind-Value="model.Username" For="@(() => model.Username)" />
+            <MudTextField Label="Email" Class="mt-3"
+            @bind-Value="model.Email" For="@(() => model.Email)" />
+            <MudTextField Label="Пароль" HelperText="Выберите надежный пароль" Class="mt-3"
+            @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+            <MudTextField Label="Пароль" HelperText="Повторите пароль" Class="mt-3"
+            @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Зарегистрироваться</MudButton>
+        </MudCardActions>
+    </MudCard>
+
+    <MudText Typo="Typo.body2" Align="Align.Center">
+        Заполните форму правильно, чтобы увидеть сообщение об успешной регистрации.
+    </MudText>
+
+</EditForm>
+
+
+
