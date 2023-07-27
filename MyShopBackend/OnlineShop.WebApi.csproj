@@ -16,4 +16,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyShop.HttpModels\OnlineShop.HttpModels.csproj" />
+    <ProjectReference Include="..\OnlineShop.Domain\OnlineShop.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

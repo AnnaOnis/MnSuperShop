@@ -8,7 +8,7 @@ namespace MyShopFrontend.Pages
         [Inject]
         private NavigationManager Navigator { get; set; } = null!;
         [Inject]
-        private IMyShopClient MyShopClient { get; set; } = null!;
+        private IOnlineShopClient MyShopClient { get; set; } = null!;
         private Product[]? _products;
         private CancellationTokenSource _cts = new();
 

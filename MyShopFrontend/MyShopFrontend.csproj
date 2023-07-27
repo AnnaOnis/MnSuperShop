@@ -22,7 +22,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <ProjectReference Include="..\MyShop.HttpApiCient\MyShop.HttpApiCient.csproj" />
+	  <ProjectReference Include="..\MyShop.HttpApiCient\OnlineShop.HttpApiCient.csproj" />
 	</ItemGroup>
 
 </Project>

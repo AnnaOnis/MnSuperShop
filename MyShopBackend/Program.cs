@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MyShopBackend.Data;
-using MyShopBackend.Data.Repositoryes;
+using OnlineShop.Domain.Interfaces;
+using OnlineShop.Domain.Services;
+using OnlineShop.WebApi.Data;
+using OnlineShop.WebApi.Data.Repositoryes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddDbContext<AppDbContext>(
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IProductRepository, ProductRepositoryEF>();
+builder.Services.AddScoped<IAccountRepository, AccountRepositoryEF>();
+builder.Services.AddScoped<AccountService>();
 
 var app = builder.Build();
 

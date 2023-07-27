@@ -1,20 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.Domain.Entyties;
+using OnlineShop.Domain.Interfaces;
 
-namespace MyShopBackend.Data.Repositoryes
+namespace OnlineShop.WebApi.Data.Repositoryes
 {
     public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
         private readonly AppDbContext _dbContext;
-        public EfRepository(AppDbContext dbContext) 
+        public EfRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
         protected DbSet<TEntity> Entities => _dbContext.Set<TEntity>();
 
 
-        public virtual async Task<IReadOnlyList<TEntity>> GetAll(CancellationToken cancellationToken) 
+        public virtual async Task<IReadOnlyList<TEntity>> GetAll(CancellationToken cancellationToken)
             => await Entities.ToListAsync(cancellationToken);
-        public virtual async Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken) 
+        public virtual async Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken)
             => await Entities.FirstAsync(x => x.Id == Id, cancellationToken);
         public virtual async Task Add(TEntity entity, CancellationToken cancellationToken)
         {

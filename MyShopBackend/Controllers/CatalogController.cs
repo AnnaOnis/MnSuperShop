@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyShopBackend.Data;
-using MyShopBackend.Data.Repositoryes;
+using OnlineShop.Domain.Entyties;
+using OnlineShop.Domain.Interfaces;
 
-namespace MyShopBackend.Controllers
+namespace OnlineShop.WebApi.Controllers
 {
     [Route("catalog")]
     [ApiController]
     public class CatalogController : ControllerBase
     {
         private readonly IRepository<Product> _repository;
-        public CatalogController(IRepository<Product> repository) 
+        public CatalogController(IRepository<Product> repository)
         {
             _repository = repository;
         }

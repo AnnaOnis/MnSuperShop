@@ -1,30 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyShopBackend.Data;
-using MyShopBackend.Data.Repositoryes;
+using OnlineShop.Domain.Services;
+using OnlineShop.HttpModels.Requests;
 
-namespace MyShopBackend.Controllers
+namespace OnlineShop.WebApi.Controllers
 {
     [Route("account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IRepository<Account> _repository;
+        private readonly AccountService _accountService;
 
-        public AccountController(IRepository<Account> repository)
+        public AccountController(AccountService accountService)
         {
-            _repository = repository;
+            _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
+
         }
 
-        [HttpPost("register") ]
-        public async Task<IActionResult> AddAccunt(
-                    Account account,
-                    [FromServices] IRepository<Account> repository,
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(
+                    RegisterRequest request,
                     CancellationToken cancellationToken)
         {
             try
             {
-                await repository.Add(account, cancellationToken);
+                await _accountService.Register(request.Name, request.Email, request.Password, cancellationToken);
                 return Ok();
+            }
+            catch (InvalidOperationException)
+            {
+                return BadRequest("Account with given email is already exists.");
             }
             catch (ArgumentNullException)
             {

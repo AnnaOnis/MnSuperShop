@@ -1,4 +1,4 @@
-namespace MyShopBackend
+namespace OnlineShop.WebApi
 {
     public class WeatherForecast
     {

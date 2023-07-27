@@ -9,7 +9,7 @@ namespace MyShopFrontend.Pages
         [Inject]
         private IDialogService DialogService { get; set; } = null!;
         [Inject]
-        private IMyShopClient MyShopClient { get; set; } = null!;
+        private IOnlineShopClient MyShopClient { get; set; } = null!;
         private List<Product> _products = new();
         private string searchString1 = "";
         private CancellationTokenSource _cts = new();

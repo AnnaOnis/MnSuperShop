@@ -11,6 +11,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddMudServices();
 
 //builder.Services.AddSingleton<ICatalog, InMemoryCatalog>();
-builder.Services.AddSingleton<IMyShopClient>(new MyShopClient(host: "https://localhost:7132/"));
+builder.Services.AddSingleton<IOnlineShopClient>(new OnlineShopClient(host: "https://localhost:7132/"));
 
 await builder.Build().RunAsync();

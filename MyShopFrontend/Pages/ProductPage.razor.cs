@@ -9,7 +9,7 @@ namespace MyShopFrontend.Pages
         public Guid ProductId { get; set; }
 
         [Inject]
-        private IMyShopClient MyShopClient { get; set; } = null!;
+        private IOnlineShopClient MyShopClient { get; set; } = null!;
 
         private Product? _product;
         private CancellationToken _cancellationToken;

@@ -1,13 +1,12 @@
-﻿using MyShop.HttpApiCient.Models;
+﻿using OnlineShop.HttpModels.Requests;
 using System.Net.Http.Json;
-using System.Security.Principal;
 
-public class MyShopClient : IDisposable, IMyShopClient
+public class OnlineShopClient : IDisposable, IOnlineShopClient
 {
     private readonly string _host;
     private readonly HttpClient _httpClient;
 
-    public MyShopClient(string host = "http://myshop.com/", HttpClient? httpClient = null)
+    public OnlineShopClient(string host = "http://myshop.com/", HttpClient? httpClient = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(host, nameof(host));
 
@@ -76,11 +75,11 @@ public class MyShopClient : IDisposable, IMyShopClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task RegistrateAccountAsync(Account account, CancellationToken cancellationToken)
+    public async Task RegistrateAccountAsync(RegisterRequest request, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(nameof(account));
+        ArgumentNullException.ThrowIfNull(nameof(request));
 
-        using var response = await _httpClient.PostAsJsonAsync("/account/register", account, cancellationToken);
+        using var response = await _httpClient.PostAsJsonAsync("/account/register", request, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 

@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.Domain.Entyties;
 
-namespace MyShopBackend.Data
+namespace OnlineShop.WebApi.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Product> Products => Set <Product > ();
+        public DbSet<Product> Products => Set<Product>();
         public DbSet<Account> Accounts => Set<Account>();
 
         public AppDbContext(
