@@ -1,4 +1,6 @@
 ﻿using OnlineShop.HttpModels.Requests;
+using OnlineShop.HttpModels.Responses;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace OnlineShop.HttpApiCient
@@ -79,7 +81,22 @@ namespace OnlineShop.HttpApiCient
             ArgumentNullException.ThrowIfNull(nameof(request));
 
             using var response = await _httpClient.PostAsJsonAsync("/account/register", request, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            if(response.IsSuccessStatusCode)
+            {
+                if(response.StatusCode == HttpStatusCode.Conflict)
+                {
+                    var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                    throw new MyShopApiException(error!);
+                }else if(response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var details = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+                    throw new MyShopApiException(response.StatusCode, details!);
+                }
+                else
+                {
+                    throw new MyShopApiException("Неизвестная ошибка!");
+                }
+            }
         }
 
     }

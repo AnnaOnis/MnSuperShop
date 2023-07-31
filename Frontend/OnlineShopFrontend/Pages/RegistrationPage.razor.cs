@@ -1,28 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OnlineShop.HttpApiCient;
 using OnlineShop.HttpModels.Requests;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineShopFrontend.Pages
 {
-    public class RegisterAccountForm
-    {
-        [Required]
-        [StringLength(30, ErrorMessage = "Имя должно содержать больше 3 символов!", MinimumLength = 3)]
-        public string Username { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Пароль не должен быть меньше 8 символов!", MinimumLength = 8)]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare(nameof(Password))]
-        public string Password2 { get; set; }
-    }
     public partial class RegistrationPage
     {
         [Inject]
@@ -30,7 +13,7 @@ namespace OnlineShopFrontend.Pages
         [Inject]
         private IOnlineShopClient MyShopClient { get; set; } = null!;
         private CancellationTokenSource _cts = new();
-        RegisterAccountForm model = new RegisterAccountForm();
+        RegisterRequest model = new RegisterRequest();
         bool _registrationInProgres;
 
         private async Task OnValidSubmit()
@@ -46,7 +29,7 @@ namespace OnlineShopFrontend.Pages
                 await Task.Delay(1000);
                 await MyShopClient.RegistrateAccountAsync(new RegisterRequest()
                 {
-                    Name = model.Username,
+                    Name = model.Name,
                     Email = model.Email,
                     Password = model.Password
                 }, _cts.Token);
@@ -55,13 +38,19 @@ namespace OnlineShopFrontend.Pages
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
                 Snackbar.Add("Вы успешно зарегистрированы", Severity.Success);
             }
+            catch(MyShopApiException e)
+            {
+                Snackbar.Configuration.ShowCloseIcon = true;
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add(e.Message, Severity.Error);
+            }
             finally
             {
                 _registrationInProgres = false;
-                model.Username = "";
+                model.Name = "";
                 model.Email = "";
                 model.Password = "";
-                model.Password2 = "";
+                model.ConfirmedPassword = "";
                 StateHasChanged();
             }
         }

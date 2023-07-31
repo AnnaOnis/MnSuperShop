@@ -1,4 +1,5 @@
 ﻿using OnlineShop.Domain.Entyties;
+using OnlineShop.Domain.Exceptions;
 using OnlineShop.Domain.Interfaces;
 
 namespace OnlineShop.Domain.Services
@@ -21,7 +22,7 @@ namespace OnlineShop.Domain.Services
             var existedAccount = await _accountRepository.FindAccountByEmail(email, cancellationToken);
             if (existedAccount is not null)
             {
-                throw new InvalidOperationException(message: "Account with given email is already exists.");
+                throw new EmailAlreadyExistsException(message: "Account with given email is already exists.");
             }
             Account account = new Account(Guid.Empty, name, email, EncryptPassword(password));
             await _accountRepository.Add(account, cancellationToken);

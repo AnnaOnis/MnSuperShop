@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Domain.Exceptions;
 using OnlineShop.Domain.Services;
 using OnlineShop.HttpModels.Requests;
+using OnlineShop.HttpModels.Responses;
 
 namespace OnlineShop.WebApi.Controllers
 {
@@ -26,9 +28,9 @@ namespace OnlineShop.WebApi.Controllers
                 await _accountService.Register(request.Name, request.Email, request.Password, cancellationToken);
                 return Ok();
             }
-            catch (InvalidOperationException)
+            catch (EmailAlreadyExistsException)
             {
-                return BadRequest("Account with given email is already exists.");
+                return Conflict(new ErrorResponse("Account with given email is already exists."));
             }
             catch (ArgumentNullException)
             {

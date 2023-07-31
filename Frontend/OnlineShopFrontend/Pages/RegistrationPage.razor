@@ -8,13 +8,13 @@
     <MudCard>
         <MudCardContent>
             <MudTextField Label="Имя" HelperText="Мин. 3 символа"
-            @bind-Value="model.Username" For="@(() => model.Username)" />
+            @bind-Value="model.Name" For="@(() => model.Name)" />
             <MudTextField Label="Email" Class="mt-3"
             @bind-Value="model.Email" For="@(() => model.Email)" />
             <MudTextField Label="Пароль" HelperText="Выберите надежный пароль" Class="mt-3"
             @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
             <MudTextField Label="Пароль" HelperText="Повторите пароль" Class="mt-3"
-            @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+            @bind-Value="model.ConfirmedPassword" For="@(() => model.ConfirmedPassword)" InputType="InputType.Password" />
         </MudCardContent>
         <MudCardActions>
             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Зарегистрироваться</MudButton>
