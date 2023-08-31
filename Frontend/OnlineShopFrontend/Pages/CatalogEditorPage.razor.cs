@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OnlineShop.HttpApiCient;
 using OnlineShopFrontend.Components;
 
 namespace OnlineShopFrontend.Pages
@@ -25,7 +26,7 @@ namespace OnlineShopFrontend.Pages
 
         private void AddItemToTable()
         {
-            _addedOrUpdatedProduct = new Product("Новый товар", 0);
+            _addedOrUpdatedProduct = new Product("А", 0);
             _products.Add(_addedOrUpdatedProduct);
         }
 

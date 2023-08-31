@@ -30,11 +30,31 @@ namespace OnlineShop.WebApi.Controllers
             }
             catch (EmailAlreadyExistsException)
             {
-                return Conflict(new ErrorResponse("Account with given email is already exists."));
+                return Conflict(new ErrorResponse("Аккаунт с таким email уже зарегистрирован!"));
             }
             catch (ArgumentNullException)
             {
                 return NotFound();
+            }
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponse>> Login(
+                     LoginRequest request,
+                     CancellationToken cancellationToken)
+        {
+            try
+            {
+                var account = await _accountService.Login(request.Email, request.Password, cancellationToken);
+                return new LoginResponse(account.Id, account.Name);
+            }
+            catch (AccountNotFoundException) 
+            { 
+                return Conflict(new ErrorResponse("Аккаунтс таким Email не найден!"));
+            }
+            catch (InvalidPasswordException)
+            {
+                return Conflict(new ErrorResponse("Неверный пароль!"));
             }
         }
     }

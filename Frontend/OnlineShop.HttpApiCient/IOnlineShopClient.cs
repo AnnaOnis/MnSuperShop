@@ -1,6 +1,9 @@
 ﻿using OnlineShop.HttpModels.Requests;
+using OnlineShop.HttpModels.Responses;
 
-public interface IOnlineShopClient
+namespace OnlineShop.HttpApiCient
+{
+    public interface IOnlineShopClient
     {
         Task<Product[]> GetProducts(CancellationToken cancellationToken);
         Task<Product> GetProduct(Guid id, CancellationToken cancellationToken);
@@ -8,4 +11,6 @@ public interface IOnlineShopClient
         Task RemoveProduct(Guid id, CancellationToken cancellationToken);
         Task UpdateProduct(Product product, CancellationToken cancellationToken);
         Task RegistrateAccountAsync(RegisterRequest request, CancellationToken cancellationToken);
+        Task<LoginResponse> Login(LoginRequest request, CancellationToken cancellationToken);
     }
+}

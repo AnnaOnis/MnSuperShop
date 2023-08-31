@@ -8,6 +8,13 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
+        <MudButton Href="/login"
+                   Variant="Variant.Outlined"
+                   EndIcon="@Icons.Material.Filled.Person"
+                   Color="Color.Inherit"
+                   Class="mr-5">
+            Вход
+        </MudButton>
         <MudButton Href="/registration"
                    Variant="Variant.Outlined"
                    EndIcon="@Icons.Material.Filled.PersonAdd"

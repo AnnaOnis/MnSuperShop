@@ -7,23 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.8">
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\OnlineShop.HttpModels\OnlineShop.HttpModels.csproj" />
     <ProjectReference Include="..\..\Backend\OnlineShop.Domain\OnlineShop.Domain.csproj" />
-    <ProjectReference Include="..\OnlineShop.Data.EF\OnlineShop.Data.EF.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
+    <ProjectReference Include="..\Infrastructure\OnlineShop.Data.EF\OnlineShop.Data.EF.csproj" />
+    <ProjectReference Include="..\Infrastructure\OnlineShop.IdentityPasswordHasher\OnlineShop.IdentityPasswordHasher.csproj" />
   </ItemGroup>
 
 </Project>

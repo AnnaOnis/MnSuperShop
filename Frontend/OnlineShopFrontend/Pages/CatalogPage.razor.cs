@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Components;
+using OnlineShop.HttpApiCient;
 
 namespace OnlineShopFrontend.Pages
 {

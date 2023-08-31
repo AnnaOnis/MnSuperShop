@@ -5,38 +5,36 @@ using OnlineShop.HttpModels.Requests;
 
 namespace OnlineShopFrontend.Pages
 {
-    public partial class RegistrationPage
+    public partial class LoginPage
     {
         [Inject]
         private ISnackbar Snackbar { get; set; } = null!;
         [Inject]
         private IOnlineShopClient MyShopClient { get; set; } = null!;
         private CancellationTokenSource _cts = new();
-        RegisterRequest model = new RegisterRequest();
-        bool _registrationInProgres;
+        LoginRequest model = new LoginRequest();
+        bool _loginInProgres;
 
         private async Task OnValidSubmit()
         {
-            if (_registrationInProgres)
+            if (_loginInProgres)
             {
                 Snackbar.Add("Пожалуйста, подождите...", Severity.Info);
                 return;
             }
-            _registrationInProgres = true;
+            _loginInProgres = true;
             try
             {
                 await Task.Delay(1000);
-                await MyShopClient.RegistrateAccountAsync(new RegisterRequest()
+                await MyShopClient.Login(new LoginRequest()
                 {
-                    Name = model.Name,
                     Email = model.Email,
-                    Password = model.Password,
-                    ConfirmedPassword = model.ConfirmedPassword,
+                    Password = model.Password
                 }, _cts.Token);
 
                 Snackbar.Configuration.ShowCloseIcon = true;
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add("Вы успешно зарегистрированы", Severity.Success);
+                Snackbar.Add("Выполнен вход в аккаунт", Severity.Success);
             }
             catch(MyShopApiException e)
             {
@@ -46,12 +44,10 @@ namespace OnlineShopFrontend.Pages
             }
             finally
             {
-                _registrationInProgres = false;
-                model.Name = "";
                 model.Email = "";
                 model.Password = "";
-                model.ConfirmedPassword = "";
                 StateHasChanged();
+                _loginInProgres = false;
             }
         }
     }

@@ -3,6 +3,7 @@ using OnlineShop.Data.EF;
 using OnlineShop.Data.EF.Repositoryes;
 using OnlineShop.Domain.Interfaces;
 using OnlineShop.Domain.Services;
+using OnlineShop.IdentityPasswordHasher;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,14 +16,15 @@ builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var dbPath = "myapp.db";
-builder.Services.AddDbContext<AppDbContext>(
-   options => options.UseSqlite($"Data Source={dbPath}"));
-
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IProductRepository, ProductRepositoryEF>();
 builder.Services.AddScoped<IAccountRepository, AccountRepositoryEF>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddSingleton<IAppPasswordHasher, IdentityPasswordHasher>();
+
+var dbPath = "myapp.db";
+builder.Services.AddDbContext<AppDbContext>(
+   options => options.UseSqlite($"Data Source={dbPath}"));
 
 var app = builder.Build();
 

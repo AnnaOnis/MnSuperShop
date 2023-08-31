@@ -1,0 +1,25 @@
+﻿@page "/login"
+@using System.ComponentModel.DataAnnotations;
+
+<PageTitle>Вход</PageTitle>
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudCard>
+        <MudCardContent>
+            <MudTextField Label="Email" Class="mt-3"
+            @bind-Value="model.Email" For="@(() => model.Email)" />
+            <MudTextField Label="Пароль" Class="mt-3"
+            @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Войти</MudButton>
+        </MudCardActions>
+    </MudCard>
+</EditForm>
+@if (_loginInProgres)
+{
+    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+}
+
+

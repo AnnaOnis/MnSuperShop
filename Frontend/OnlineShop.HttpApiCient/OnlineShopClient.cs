@@ -81,7 +81,7 @@ namespace OnlineShop.HttpApiCient
             ArgumentNullException.ThrowIfNull(nameof(request));
 
             using var response = await _httpClient.PostAsJsonAsync("/account/register", request, cancellationToken);
-            if(response.IsSuccessStatusCode)
+            if(!response.IsSuccessStatusCode)
             {
                 if(response.StatusCode == HttpStatusCode.Conflict)
                 {
@@ -99,5 +99,30 @@ namespace OnlineShop.HttpApiCient
             }
         }
 
+        public async Task<LoginResponse> Login(LoginRequest request, CancellationToken cancellationToken)
+        {
+            ArgumentNullException.ThrowIfNull(nameof(request));
+
+            using var response = await _httpClient.PostAsJsonAsync("/account/login", request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.Conflict)
+                {
+                    var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: cancellationToken);
+                    throw new MyShopApiException(error!);
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var details = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>(cancellationToken: cancellationToken);
+                    throw new MyShopApiException(response.StatusCode, details!);
+                }
+                else
+                {
+                    throw new MyShopApiException($"Неизвестная ошибка!: {response.StatusCode}");
+                }
+            }
+            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(cancellationToken: cancellationToken);
+            return loginResponse;
+        }
     }
 }
