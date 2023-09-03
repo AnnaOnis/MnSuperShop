@@ -76,7 +76,7 @@ namespace OnlineShop.HttpApiCient
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task RegistrateAccountAsync(RegisterRequest request, CancellationToken cancellationToken)
+        public async Task<RegisterResponse> RegistrateAccountAsync(RegisterRequest request, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(nameof(request));
 
@@ -85,11 +85,11 @@ namespace OnlineShop.HttpApiCient
             {
                 if(response.StatusCode == HttpStatusCode.Conflict)
                 {
-                    var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                    var error = await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: cancellationToken);
                     throw new MyShopApiException(error!);
                 }else if(response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    var details = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+                    var details = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>(cancellationToken: cancellationToken);
                     throw new MyShopApiException(response.StatusCode, details!);
                 }
                 else
@@ -97,6 +97,8 @@ namespace OnlineShop.HttpApiCient
                     throw new MyShopApiException("Неизвестная ошибка!");
                 }
             }
+            var registerResponse = await response.Content.ReadFromJsonAsync<RegisterResponse>(cancellationToken: cancellationToken);
+            return registerResponse;
         }
 
         public async Task<LoginResponse> Login(LoginRequest request, CancellationToken cancellationToken)

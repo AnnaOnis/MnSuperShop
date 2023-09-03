@@ -22,7 +22,7 @@ namespace OnlineShop.Domain.Services
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Register(string name, string email, string password, CancellationToken cancellationToken)
+        public async Task<Account> Register(string name, string email, string password, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(name, nameof(name));
             ArgumentNullException.ThrowIfNull(email, nameof(email));
@@ -35,6 +35,8 @@ namespace OnlineShop.Domain.Services
             }
             Account account = new Account(Guid.Empty, name, email, EncryptPassword(password));
             await _accountRepository.Add(account, cancellationToken);
+
+            return account;
         }
 
         private string EncryptPassword(string password)

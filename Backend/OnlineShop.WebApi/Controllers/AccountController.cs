@@ -19,22 +19,18 @@ namespace OnlineShop.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(
+        public async Task<ActionResult<RegisterResponse>> Register(
                     RegisterRequest request,
                     CancellationToken cancellationToken)
         {
             try
             {
-                await _accountService.Register(request.Name, request.Email, request.Password, cancellationToken);
-                return Ok();
+                var account = await _accountService.Register(request.Name, request.Email, request.Password, cancellationToken);
+                return new RegisterResponse(account.Id, account.Name, account.Email);
             }
             catch (EmailAlreadyExistsException)
             {
                 return Conflict(new ErrorResponse("Аккаунт с таким email уже зарегистрирован!"));
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
             }
         }
 
@@ -46,7 +42,7 @@ namespace OnlineShop.WebApi.Controllers
             try
             {
                 var account = await _accountService.Login(request.Email, request.Password, cancellationToken);
-                return new LoginResponse(account.Id, account.Name);
+                return new LoginResponse(account.Id, account.Name, account.Email);
             }
             catch (AccountNotFoundException) 
             { 

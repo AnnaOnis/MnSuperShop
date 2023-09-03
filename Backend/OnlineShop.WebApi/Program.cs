@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data.EF;
 using OnlineShop.Data.EF.Repositoryes;
@@ -26,7 +27,30 @@ var dbPath = "myapp.db";
 builder.Services.AddDbContext<AppDbContext>(
    options => options.UseSqlite($"Data Source={dbPath}"));
 
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.RequestHeaders
+                            | HttpLoggingFields.ResponseHeaders
+                            | HttpLoggingFields.RequestBody
+                            | HttpLoggingFields.ResponseBody;
+});
+
+
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    var userAgent = context.Request.Headers.UserAgent;
+    if (userAgent.ToString().Contains("Edg"))
+    {
+        await next();
+    }
+    else
+    {
+        await context.Response.WriteAsync("You are not using MS Edge! Please, use MS Edge!");
+    }
+
+});
 
 app.UseCors(policy =>
 {
@@ -38,6 +62,9 @@ app.UseCors(policy =>
 
 
 // Configure the HTTP request pipeline.
+
+app.UseHttpLogging();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -49,12 +76,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-//app.MapGet("/get_products", GetProducts);
-//app.MapGet("/get_product", GetProductById);
-//app.MapPost("/add_product", AddProduct);
-//app.MapPost("/remove_product", RemoveProduct);
-//app.MapPost("/update_product", UpdateProduct);
 
 app.Run();
 

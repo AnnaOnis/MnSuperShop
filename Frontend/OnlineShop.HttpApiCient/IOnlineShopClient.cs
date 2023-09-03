@@ -10,7 +10,7 @@ namespace OnlineShop.HttpApiCient
         Task AddProduct(Product product, CancellationToken cancellationToken);
         Task RemoveProduct(Guid id, CancellationToken cancellationToken);
         Task UpdateProduct(Product product, CancellationToken cancellationToken);
-        Task RegistrateAccountAsync(RegisterRequest request, CancellationToken cancellationToken);
+        Task<RegisterResponse> RegistrateAccountAsync(RegisterRequest request, CancellationToken cancellationToken);
         Task<LoginResponse> Login(LoginRequest request, CancellationToken cancellationToken);
     }
 }

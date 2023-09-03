@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.HttpModels.Responses
 {
-    public record LoginResponse(Guid Id, string Name, string Email);
+    public record RegisterResponse(Guid Id, string Name, string Email);
 }
