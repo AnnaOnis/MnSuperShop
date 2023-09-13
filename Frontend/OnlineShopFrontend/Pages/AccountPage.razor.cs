@@ -1,21 +1,39 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OnlineShop.HttpApiCient;
-using OnlineShop.HttpApiCient.Models;
+using OnlineShop.HttpModels.Responses;
 
 namespace OnlineShopFrontend.Pages
 {
     public partial class AccountPage
     {
         [Inject]
-        private IOnlineShopClient MyShopClient { get; set; } = null!;
+        private ISnackbar Snackbar { get; set; } = null!;
 
-        private Account? _account;
-        private CancellationToken _cancellationToken;
+        private AccountResponse? _account;
+        private CancellationTokenSource _cts = new();
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            
+
+            try
+            {
+                _account = await ShopClient.GetCurrentAccount(_cts.Token);
+            }
+            catch(MyShopApiException e)
+            {
+                Snackbar.Configuration.ShowCloseIcon = true;
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add(e.Message, Severity.Error);
+            }
+        }
+
+        public void LogOut()
+        {
+            ShopClient.ResetAuthorizationToken();
+            _account = null!;
+            State.IsTokenChecked = false;
         }
     }
 }

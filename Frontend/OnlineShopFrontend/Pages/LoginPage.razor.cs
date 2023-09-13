@@ -8,9 +8,11 @@ namespace OnlineShopFrontend.Pages
     public partial class LoginPage
     {
         [Inject]
-        private ISnackbar Snackbar { get; set; } = null!;
+        private NavigationManager Navigator { get; set; } = null!;
+
         [Inject]
-        private IOnlineShopClient MyShopClient { get; set; } = null!;
+        private ISnackbar Snackbar { get; set; } = null!;
+
         private CancellationTokenSource _cts = new();
         LoginRequest model = new LoginRequest();
         bool _loginInProgres;
@@ -26,15 +28,19 @@ namespace OnlineShopFrontend.Pages
             try
             {
                 await Task.Delay(1000);
-                await MyShopClient.Login(new LoginRequest()
+                var loginResponse = await ShopClient.Login(new LoginRequest()
                 {
                     Email = model.Email,
                     Password = model.Password
                 }, _cts.Token);
 
+                await LocalStorage.SetItemAsync("token", loginResponse.Token);
+
                 Snackbar.Configuration.ShowCloseIcon = true;
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
                 Snackbar.Add("Выполнен вход в аккаунт", Severity.Success);
+
+                Navigator.NavigateTo("/account");
             }
             catch(MyShopApiException e)
             {

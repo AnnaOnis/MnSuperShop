@@ -1,17 +1,56 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OnlineShop.Data.EF;
 using OnlineShop.Data.EF.Repositoryes;
 using OnlineShop.Domain.Interfaces;
 using OnlineShop.Domain.Services;
 using OnlineShop.IdentityPasswordHasher;
+using OnlineShop.WebApi.Configurations;
+using OnlineShop.WebApi.Sevices;
 
 var builder = WebApplication.CreateBuilder(args);
+
+JwtConfig jwtConfig = builder.Configuration
+   .GetRequiredSection("JwtConfig")
+   .Get<JwtConfig>()!;
+if (jwtConfig is null)
+{
+    throw new InvalidOperationException("JwtConfig is not configured");
+}
+builder.Services.AddSingleton(jwtConfig);
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddCors();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+   .AddJwtBearer(options =>
+   {
+       options.TokenValidationParameters = new TokenValidationParameters
+       {
+           IssuerSigningKey = new SymmetricSecurityKey(jwtConfig.SigningKeyBytes),
+           ValidateIssuerSigningKey = true,
+           ValidateLifetime = true,
+           RequireExpirationTime = true,
+           RequireSignedTokens = true,
+
+           ValidateAudience = true,
+           ValidateIssuer = true,
+           ValidAudiences = new[] { jwtConfig.Audience },
+           ValidIssuer = jwtConfig.Issuer
+       };
+   });
+builder.Services.AddAuthorization();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -73,6 +112,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

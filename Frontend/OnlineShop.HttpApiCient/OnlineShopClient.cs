@@ -1,6 +1,7 @@
 ﻿using OnlineShop.HttpModels.Requests;
 using OnlineShop.HttpModels.Responses;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace OnlineShop.HttpApiCient
@@ -10,6 +11,7 @@ namespace OnlineShop.HttpApiCient
         private readonly string _host;
         private readonly HttpClient _httpClient;
 
+        public bool IsAuthorizationTokenSet { get; private set; }
         public OnlineShopClient(string host = "http://myshop.com/", HttpClient? httpClient = null)
         {
             ArgumentException.ThrowIfNullOrEmpty(host, nameof(host));
@@ -26,6 +28,20 @@ namespace OnlineShop.HttpApiCient
         public void Dispose()
         {
             ((IDisposable)_httpClient).Dispose();
+        }
+
+        public void SetAuthorizationToken(string token)
+        {
+            if (token is null) throw new ArgumentNullException(nameof(token));
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            IsAuthorizationTokenSet = true;
+        }
+
+        public void ResetAuthorizationToken()
+        {
+            _httpClient.DefaultRequestHeaders.Remove("Authorization");
+            IsAuthorizationTokenSet = false;
         }
 
         public async Task<Product[]> GetProducts(CancellationToken cancellationToken)
@@ -98,6 +114,8 @@ namespace OnlineShop.HttpApiCient
                 }
             }
             var registerResponse = await response.Content.ReadFromJsonAsync<RegisterResponse>(cancellationToken: cancellationToken);
+            SetAuthorizationToken(registerResponse.Token);
+
             return registerResponse;
         }
 
@@ -106,6 +124,7 @@ namespace OnlineShop.HttpApiCient
             ArgumentNullException.ThrowIfNull(nameof(request));
 
             using var response = await _httpClient.PostAsJsonAsync("/account/login", request, cancellationToken);
+
             if (!response.IsSuccessStatusCode)
             {
                 if (response.StatusCode == HttpStatusCode.Conflict)
@@ -123,8 +142,23 @@ namespace OnlineShop.HttpApiCient
                     throw new MyShopApiException($"Неизвестная ошибка!: {response.StatusCode}");
                 }
             }
+
             var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(cancellationToken: cancellationToken);
+            SetAuthorizationToken(loginResponse.Token);
+
             return loginResponse;
+        }
+
+        public async Task<AccountResponse> GetCurrentAccount(CancellationToken cancellationToken)
+        {
+            using var response = await _httpClient.GetAsync("/account/current", cancellationToken);
+            if(response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new MyShopApiException("Необходимо войти или зарегистрироваться!");
+            }
+
+            var accountResponse = await response.Content.ReadFromJsonAsync<AccountResponse>(cancellationToken: cancellationToken);
+            return accountResponse;
         }
     }
 }

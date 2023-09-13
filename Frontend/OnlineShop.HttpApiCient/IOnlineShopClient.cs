@@ -12,5 +12,8 @@ namespace OnlineShop.HttpApiCient
         Task UpdateProduct(Product product, CancellationToken cancellationToken);
         Task<RegisterResponse> RegistrateAccountAsync(RegisterRequest request, CancellationToken cancellationToken);
         Task<LoginResponse> Login(LoginRequest request, CancellationToken cancellationToken);
+        Task<AccountResponse> GetCurrentAccount(CancellationToken cancellationToken);
+        void SetAuthorizationToken(string token);
+        void ResetAuthorizationToken();
     }
 }

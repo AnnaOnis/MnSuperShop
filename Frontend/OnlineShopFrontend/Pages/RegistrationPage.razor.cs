@@ -8,9 +8,11 @@ namespace OnlineShopFrontend.Pages
     public partial class RegistrationPage
     {
         [Inject]
-        private ISnackbar Snackbar { get; set; } = null!;
+        private NavigationManager Navigator { get; set; } = null!;
+
         [Inject]
-        private IOnlineShopClient MyShopClient { get; set; } = null!;
+        private ISnackbar Snackbar { get; set; } = null!;
+
         private CancellationTokenSource _cts = new();
         RegisterRequest model = new RegisterRequest();
         bool _registrationInProgres;
@@ -26,7 +28,7 @@ namespace OnlineShopFrontend.Pages
             try
             {
                 await Task.Delay(1000);
-                await MyShopClient.RegistrateAccountAsync(new RegisterRequest()
+                var registerResponse = await ShopClient.RegistrateAccountAsync(new RegisterRequest()
                 {
                     Name = model.Name,
                     Email = model.Email,
@@ -34,9 +36,13 @@ namespace OnlineShopFrontend.Pages
                     ConfirmedPassword = model.ConfirmedPassword,
                 }, _cts.Token);
 
+                await LocalStorage.SetItemAsync("token", registerResponse.Token);
+
                 Snackbar.Configuration.ShowCloseIcon = true;
                 Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
                 Snackbar.Add("Вы успешно зарегистрированы", Severity.Success);
+
+                Navigator.NavigateTo("/account");
             }
             catch(MyShopApiException e)
             {

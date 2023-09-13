@@ -78,5 +78,10 @@ namespace OnlineShop.Domain.Services
             account.HashedPassword = EncryptPassword(password);
             return _accountRepository.Update(account, cancellationToken);
         }
+
+        public Task<Account> GetAccountById(Guid id, CancellationToken cancellationToken)
+        {
+            return _accountRepository.GetById(id, cancellationToken);
+        }
     }
 }

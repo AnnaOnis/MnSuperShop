@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using OnlineShop.HttpApiCient;
+
+@inherits LayoutComponentBase;
+@inject AppState State;
+@inject IOnlineShopClient ShopClient;
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -8,19 +12,30 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
-        <MudButton Href="/login"
-                   Variant="Variant.Outlined"
-                   EndIcon="@Icons.Material.Filled.Person"
-                   Color="Color.Inherit"
-                   Class="mr-5">
-            Вход
-        </MudButton>
-        <MudButton Href="/registration"
-                   Variant="Variant.Outlined"
-                   EndIcon="@Icons.Material.Filled.PersonAdd"
-                   Color="Color.Inherit">
-            Регистрация
-        </MudButton>
+        @if (State.IsTokenChecked == false)
+        {
+            <MudButton Href="/login"
+                       Variant="Variant.Outlined"
+                       EndIcon="@Icons.Material.Filled.Person"
+                       Color="Color.Inherit"
+                       Class="mr-5">
+                Вход
+            </MudButton>
+            <MudButton Href="/registration"
+                       Variant="Variant.Outlined"
+                       EndIcon="@Icons.Material.Filled.PersonAdd"
+                       Color="Color.Inherit">
+                Регистрация
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Inherit"
+                       OnClick="()=>LogOut()">
+                Выход
+            </MudButton>
+        }
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>
@@ -41,5 +56,11 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    void LogOut()
+    {
+        ShopClient.ResetAuthorizationToken();
+        State.IsTokenChecked = false;
     }
 }

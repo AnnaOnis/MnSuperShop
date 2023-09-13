@@ -1,18 +1,19 @@
 ﻿@page "/account"
+@inherits AppComponentBase;
 
-<MudText>Аккаунт</MudText>
-
-@if (_account is null)
+@if (@_account == null)
 {
     <MudText Typo="Typo.h2"><MudLink Href="/login" Typo="Typo.h2">Войдите</MudLink> или <MudLink Href="/registration" Typo="Typo.h2">зарегистрируйтесь</MudLink>...</MudText>
 }
 else
 {
-    <MudCard style="width: 300px">
-        <MudCardMedia Image="uzerFoto.jpg" Height="200" />
+    <MudCard style="width: 400px; height: 500px">
+        <MudCardMedia Image="uzerFoto.jpg" Height="350" />
         <MudCardContent>
             <MudText Typo="Typo.h4">@_account.Name</MudText>
-            <MudText Typo="Typo.h5">Icon="@Icons.Material.Filled.Email"@_account.Email</MudText>
+            <MudIcon Icon="@Icons.Material.Filled.Email" class="d-inline mr-5"></MudIcon>
+            <MudText Typo="Typo.h5" class="d-inline">@_account.Email</MudText>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" style="float:right;" OnClick="()=>LogOut()">Выход</MudButton>
         </MudCardContent>
     </MudCard>
 }
