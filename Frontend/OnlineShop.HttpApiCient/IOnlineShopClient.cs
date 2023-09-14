@@ -5,6 +5,8 @@ namespace OnlineShop.HttpApiCient
 {
     public interface IOnlineShopClient
     {
+        bool IsAuthorizationTokenSet { get; set; }
+
         Task<Product[]> GetProducts(CancellationToken cancellationToken);
         Task<Product> GetProduct(Guid id, CancellationToken cancellationToken);
         Task AddProduct(Product product, CancellationToken cancellationToken);

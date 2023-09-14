@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OnlineShop.HttpApiCient;
 using OnlineShop.HttpModels.Responses;
+using OnlineShopFrontend.Components;
 
 namespace OnlineShopFrontend.Pages
 {
     public partial class AccountPage
     {
         [Inject]
-        private ISnackbar Snackbar { get; set; } = null!;
+        private NavigationManager Navigator { get; set; } = null!;
+
+        [Inject]
+        private IDialogService DialogService { get; set; } = null!;
 
         private AccountResponse? _account;
         private CancellationTokenSource _cts = new();
@@ -17,23 +20,23 @@ namespace OnlineShopFrontend.Pages
         {
             await base.OnInitializedAsync();
 
-            try
-            {
-                _account = await ShopClient.GetCurrentAccount(_cts.Token);
-            }
-            catch(MyShopApiException e)
-            {
-                Snackbar.Configuration.ShowCloseIcon = true;
-                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-                Snackbar.Add(e.Message, Severity.Error);
-            }
+            if (ShopClient.IsAuthorizationTokenSet == false) return;
+            _account = await ShopClient.GetCurrentAccount(_cts.Token);
         }
 
-        public void LogOut()
+        public async Task LogOut()
         {
-            ShopClient.ResetAuthorizationToken();
-            _account = null!;
-            State.IsTokenChecked = false;
+            var dialog = DialogService.Show<LogOutDialog>();
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            { 
+                ShopClient.ResetAuthorizationToken();
+                await LocalStorage.RemoveItemAsync("token");
+                State.IsTokenChecked = false;
+
+                Navigator.NavigateTo("/login");
+            }
+
         }
     }
 }

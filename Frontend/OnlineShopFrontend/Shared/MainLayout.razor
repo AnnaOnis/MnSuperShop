@@ -1,8 +1,12 @@
-﻿@using OnlineShop.HttpApiCient;
+﻿@using Blazored.LocalStorage;
+@using OnlineShop.HttpApiCient;
 
 @inherits LayoutComponentBase;
 @inject AppState State;
 @inject IOnlineShopClient ShopClient;
+@inject ILocalStorageService LocalStorage;
+@inject NavigationManager Navigator;
+@inject IDialogService DialogService ;
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -12,7 +16,7 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
-        @if (State.IsTokenChecked == false)
+        @if (ShopClient.IsAuthorizationTokenSet == false)
         {
             <MudButton Href="/login"
                        Variant="Variant.Outlined"
@@ -58,9 +62,17 @@
         _drawerOpen = !_drawerOpen;
     }
 
-    void LogOut()
+    async Task LogOut()
     {
-        ShopClient.ResetAuthorizationToken();
-        State.IsTokenChecked = false;
+        var dialog = DialogService.Show<LogOutDialog>();
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            ShopClient.ResetAuthorizationToken();
+            await LocalStorage.RemoveItemAsync("token");
+            State.IsTokenChecked = false;
+
+            Navigator.NavigateTo("/login");
+        }
     }
 }

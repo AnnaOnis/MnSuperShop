@@ -1,7 +1,7 @@
 ﻿@page "/account"
 @inherits AppComponentBase;
 
-@if (@_account == null)
+@if (@_account is null)
 {
     <MudText Typo="Typo.h2"><MudLink Href="/login" Typo="Typo.h2">Войдите</MudLink> или <MudLink Href="/registration" Typo="Typo.h2">зарегистрируйтесь</MudLink>...</MudText>
 }

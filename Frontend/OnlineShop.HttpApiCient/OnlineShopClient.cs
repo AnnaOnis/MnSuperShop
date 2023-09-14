@@ -11,7 +11,7 @@ namespace OnlineShop.HttpApiCient
         private readonly string _host;
         private readonly HttpClient _httpClient;
 
-        public bool IsAuthorizationTokenSet { get; private set; }
+        public bool IsAuthorizationTokenSet { get; set; }
         public OnlineShopClient(string host = "http://myshop.com/", HttpClient? httpClient = null)
         {
             ArgumentException.ThrowIfNullOrEmpty(host, nameof(host));
