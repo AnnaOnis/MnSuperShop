@@ -8,16 +8,16 @@ namespace OnlineShop.Domain.Services
 {
     public class AccountService
     {
-        private readonly IAccountRepository _accountRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IAppPasswordHasher _hasher;
         private readonly ILogger<AccountService> _logger;
 
         public AccountService(
-            IAccountRepository accountRepository, 
+            IUnitOfWork uow, 
             IAppPasswordHasher hasher,
             ILogger<AccountService> logger)
         {
-            _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+            _unitOfWork = uow ?? throw new ArgumentNullException(nameof(uow));
             _hasher = hasher ?? throw new ArgumentNullException();
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -28,13 +28,14 @@ namespace OnlineShop.Domain.Services
             ArgumentNullException.ThrowIfNull(email, nameof(email));
             ArgumentNullException.ThrowIfNull(password, nameof(password));
 
-            var existedAccount = await _accountRepository.FindAccountByEmail(email, cancellationToken);
+            var existedAccount = await _unitOfWork.AccountRepository.FindAccountByEmail(email, cancellationToken);
             if (existedAccount is not null)
             {
                 throw new EmailAlreadyExistsException(message: "Аккаунт с таким email уже зарегистрирован!");
             }
             Account account = new Account(Guid.Empty, name, email, EncryptPassword(password));
-            await _accountRepository.Add(account, cancellationToken);
+            await _unitOfWork.AccountRepository.Add(account, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return account;
         }
@@ -51,7 +52,7 @@ namespace OnlineShop.Domain.Services
             ArgumentNullException.ThrowIfNull(email, nameof(email));
             ArgumentNullException.ThrowIfNull(password, nameof(password));
 
-            var account = await _accountRepository.FindAccountByEmail(email, cancellationToken);
+            var account = await _unitOfWork.AccountRepository.FindAccountByEmail(email, cancellationToken);
             if (account is null)
             {
                 throw new AccountNotFoundException("Account with given email not found");
@@ -76,12 +77,12 @@ namespace OnlineShop.Domain.Services
             ArgumentNullException.ThrowIfNull(account, nameof(account));
 
             account.HashedPassword = EncryptPassword(password);
-            return _accountRepository.Update(account, cancellationToken);
+            return _unitOfWork.AccountRepository.Update(account, cancellationToken);
         }
 
         public Task<Account> GetAccountById(Guid id, CancellationToken cancellationToken)
         {
-            return _accountRepository.GetById(id, cancellationToken);
+            return _unitOfWork.AccountRepository.GetById(id, cancellationToken);
         }
     }
 }

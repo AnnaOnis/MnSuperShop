@@ -26,7 +26,6 @@ namespace OnlineShop.Data.EF.Repositoryes
             }
 
             await Entities.AddAsync(entity, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
         }
         public virtual async Task Update(TEntity entity, CancellationToken cancellationToken)
         {
@@ -36,13 +35,11 @@ namespace OnlineShop.Data.EF.Repositoryes
             }
 
             _dbContext.Entry(entity).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync(cancellationToken);
         }
         public virtual async Task Delete(Guid Id, CancellationToken cancellationToken)
         {
             var entity = await Entities.FirstAsync(x => x.Id == Id, cancellationToken);
             Entities.Remove(entity);
-            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }
