@@ -24,15 +24,7 @@ namespace OnlineShop.Domain.Services
             if(quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity));
 
             var cart = await _unitOfWork.CartRepository.GetCartByAccountId(accountId, cancellationToken);
-            var existedCartItem = cart.CartItems.FirstOrDefault(item => item.ProductId ==  product.Id);
-            if (existedCartItem is null)
-            {
-                cart.CartItems.Add(new CartItem ( Guid.Empty, product.Id, quantity));
-            }
-            else
-            {
-                existedCartItem.Quantity += quantity;
-            }
+            await cart.AddItem(product.Id, quantity);
 
             await _unitOfWork.CartRepository.Update(cart, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

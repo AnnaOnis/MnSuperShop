@@ -59,8 +59,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IProductRepository, ProductRepositoryEF>();
 builder.Services.AddScoped<IAccountRepository, AccountRepositoryEF>();
-builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ICartRepository, CartRepositoryEF>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWorkEf>();
 builder.Services.AddSingleton<IAppPasswordHasher, IdentityPasswordHasher>();
+
+builder.Services.AddScoped<AccountService>();
+
 
 var dbPath = "myapp.db";
 builder.Services.AddDbContext<AppDbContext>(

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Data.EF.Repositoryes
 {
-    internal class CartRepositoryEF : EfRepository<Cart>, ICartRepository
+    public class CartRepositoryEF : EfRepository<Cart>, ICartRepository
     {
         public CartRepositoryEF(AppDbContext dbContext) : base(dbContext)
         {
