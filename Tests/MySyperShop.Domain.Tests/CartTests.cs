@@ -58,7 +58,7 @@ namespace MySyperShop.Domain.Tests
             cart.AddItem(productTwoId, 1d);
 
             //Assert
-            Assert.Equal(2d, cart.CartItems.Count());
+            Assert.Equal(2d, cart.CartItems.Count);
         }
 
         [Theory]

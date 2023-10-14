@@ -3,6 +3,7 @@ using OnlineShop.Domain.Entyties;
 using OnlineShop.Domain.Exceptions;
 using OnlineShop.Domain.Interfaces;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace OnlineShop.Domain.Services
 {
@@ -34,7 +35,11 @@ namespace OnlineShop.Domain.Services
                 throw new EmailAlreadyExistsException(message: "Аккаунт с таким email уже зарегистрирован!");
             }
             Account account = new Account(Guid.Empty, name, email, EncryptPassword(password));
+            Cart cart = new Cart(Guid.Empty, account.Id);
+
             await _unitOfWork.AccountRepository.Add(account, cancellationToken);
+            await _unitOfWork.CartRepository.Add(cart, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return account;
